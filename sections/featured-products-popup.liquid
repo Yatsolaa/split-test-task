@@ -2,7 +2,78 @@
 <script src="{{ "s-featured-products-popup.js" |  asset_url }}" defer></script>
 
 <s-featured-products-popup class="s-featured-products-popup">
-<h1>Featured products popup</h1>
+  <div class="s-featured-products-popup__overlay js-featured-products-popup__overlay"></div>
+
+  <div class="s-featured-products-popup__container">
+    {% if section.settings.image != blank %}
+      <div class="s-featured-products-popup__image">
+        <img src="{{ section.settings.image | img_url: 'master' }}" width="" height="">
+      </div>
+    {% endif %}
+    <div class="s-featured-products-popup__content-wrapper">
+      {% if section.settings.subheading != blank %}
+        <h3 class="s-featured-products-popup__subheading">{{ section.settings.subheading }}</h3>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="s-featured-products-popup__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% assign product_blocks = section.blocks | where: 'type', 'product' %}
+      {% for block in product_blocks %}
+        {% liquid
+          if block.settings.product != blank
+           assign product = block.settings.product
+          endif
+        %}
+
+        {% if product %}
+          <div 
+            class="s-featured-products-popup__product-wrapper"
+            data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+          >
+            <a href="{{ product.url }}" class="s-featured-products-popup__product-image">
+              <img src="{{ product.featured_image | img_url: 'master' }}" width="" height="">
+            </a>
+
+            <div class="s-featured-products-popup__product-info">
+              <div class="s-featured-products-popup__sku">
+                {{ "sections.featured-products-popup.sku" | t: sku: product.sku }}
+              </div>
+
+              <div class="s-featured-products-popup__product-title">
+                {{ product.title }}
+              </div>
+
+              <div class="s-featured-products-popup__product-title">
+                {{ product.selected_or_first_available_variant.options[0].value }}
+              </div>
+
+              <div class="s-featured-products-popup__product-price-wrapper">
+                {% if product.compare_at_price > product.price %}
+                  <div class="s-featured-products-popup__price">
+                    {{ product.price | money_with_currency }}
+                  </div>
+                  <div class="s-featured-products-popup__compare-at-price">
+                    {{ product.compare_at_price | money_with_currency }}
+                  </div>
+                  {% else %}
+                  <div class="s-featured-products-popup__price">
+                    {{ product.price | money_with_currency }}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <div class="s-featured-products-popup__cta js-featured-products-popup__cta">
+        {{ "sections.featured-products-popup.add_to_cart" | t }}
+        {% render 'icon-cart' %}
+      </div>
+    </div>
+  </div>
 </s-featured-products-popup>
 
 {% schema %}
