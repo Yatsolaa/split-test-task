@@ -368,7 +368,8 @@
     },
     "featured-products-popup": {
       "sku": "SKU: {{ sku }}",
-      "add_to_cart": "Add to cart"
+      "add_to_cart": "Add to cart",
+      "success_message": "Products added"
     }
   },
   "localization": {
